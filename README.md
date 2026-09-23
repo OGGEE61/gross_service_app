@@ -1,34 +1,141 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Gross Service App
 
-## Getting Started
+After-sales parts ordering portal for **GROSS briquetting machines**. Customers scan a unique QR code on their machine and order original spare parts in seconds — directly from GROSS.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## What it does
+
+**For customers (machine operators):**
+- Scan the QR code sticker on their GROSS machine
+- Click the component they need on an interactive X-ray view
+- Add parts to cart and submit an order request — no account needed
+
+**For GROSS staff (admin):**
+- View and manage all incoming orders (status: New → Processing → Shipped)
+- Register new physical machines with client details + serial numbers
+- Generate and print unique QR code stickers per machine
+- Toggle which parts are visible in the ordering UI per machine type
+- Export orders to CSV
+
+---
+
+## Machine Catalogue
+
+| Machine | Series | Briquette Ø |
+|---|---|---|
+| GP-Genius 1 / 40 | Genius | 40 mm |
+| Genius 2 / 40 | Genius | 40 mm |
+| Genius 2 / 50 | Genius | 50 mm |
+| Genius 2 / 60 | Genius | 60 mm |
+| GP 80 | GP Series | 80 mm |
+| GP 150 | GP Series | 80 mm |
+| GP 300 S | GP S-Series | 80 mm |
+
+---
+
+## Tech Stack
+
+- **Framework**: Next.js 16 (App Router, TypeScript)
+- **Styling**: Tailwind CSS v4
+- **Animations**: Framer Motion
+- **Database**: Neon Serverless Postgres (via `@neondatabase/serverless`)
+- **QR Scanning**: `jsqr` (browser camera via `getUserMedia`)
+- **QR Generation**: `qrcode`
+- **Deployment**: Vercel
+
+---
+
+## Routes
+
+| Route | Description |
+|---|---|
+| `/` | Machine catalogue grid |
+| `/machine/[id]` | Machine parts viewer (accepts machine-type ID or serial number) |
+| `/scan` | Camera QR code scanner |
+| `/admin/login` | Staff PIN login |
+| `/admin` | Orders, machines & parts visibility dashboard |
+| `/admin/qr-codes` | QR sticker generator & print view |
+
+### API Routes
+
+| Method | Route | Description |
+|---|---|---|
+| `POST` | `/api/auth` | PIN login → sets session cookie |
+| `DELETE` | `/api/auth` | Logout |
+| `POST` | `/api/orders` | Create new order |
+| `GET` | `/api/orders` | List all orders (admin) |
+| `PATCH` | `/api/orders/[id]` | Update order status |
+| `POST` | `/api/machines-db` | Register a physical machine |
+| `GET` | `/api/machines-db` | List registered machines (admin) |
+| `PATCH` | `/api/parts/[id]` | Toggle part visibility (admin) |
+| `GET` | `/api/parts-by-machine` | Get parts for a machine type (admin) |
+
+---
+
+## Database Schema (Neon Postgres)
+
+```
+machine_types   — machine models (Genius 2/40, GP 80, etc.)
+modules         — subsystems per machine type (Hopper, Hydraulic Tank, etc.)
+parts           — spare parts per module, with visible toggle
+machines        — registered physical machines (serial number + client details)
+orders          — customer order requests
+order_items     — line items per order
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Local Development
 
-## Learn More
+**1. Clone and install**
+```bash
+git clone https://github.com/OGGEE61/gross_service_app.git
+cd "gross service app"
+npm install
+```
 
-To learn more about Next.js, take a look at the following resources:
+**2. Set up environment variables**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Pull from Vercel (requires `vercel link` first):
+```bash
+npx vercel env pull .env.local --environment=production
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Or create `.env.local` manually:
+```env
+POSTGRES_URL="postgresql://..."   # from Vercel/Neon dashboard
+ADMIN_PIN="your-pin-here"
+```
 
-## Deploy on Vercel
+**3. Seed the database** (first time only)
+```bash
+POSTGRES_URL="..." npx tsx src/lib/seed.ts
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**4. Run dev server**
+```bash
+npm run dev
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Open [http://localhost:3000](http://localhost:3000)
+
+---
+
+## Deployment
+
+Deployed automatically via **Vercel** on every push to `main`.
+
+Required environment variables in Vercel project settings:
+- `POSTGRES_URL` — provided automatically by Neon integration
+- `ADMIN_PIN` — set manually in Vercel dashboard
+
+---
+
+## Admin Access
+
+Visit `/admin/login` and enter the admin PIN.  
+Default PIN (local dev): `gross2024`  
+Production PIN: set via `ADMIN_PIN` in Vercel environment variables.
+
+> ⚠️ Change the default PIN before going live.
