@@ -2,65 +2,173 @@ import { Machine, Module } from '@/types';
 
 const shredderModules: Module[] = [
   {
-    id: 'shr-hopper',
+    id: 'shr-hyd',
+    name: 'Hydraulic Unit',
+    description: 'Compactly integrated into the machine body.',
+    position: { x: 20, y: 80 },
+    parts: [
+      { id: 'hyd-pump', partNumber: 'GRS-SHR-HYD-001', name: 'Hydraulic Pump Assembly', description: 'Complete replacement hydraulic pump.', price: 850, currency: 'EUR', availability: 'on-order', leadTimeDays: 14, category: 'Hydraulics' },
+      { id: 'hyd-filter', partNumber: 'GRS-SHR-HYD-002', name: 'Hydraulic Oil Filter', description: 'Standard replacement filter for hydraulic system.', price: 45, currency: 'EUR', availability: 'in-stock', category: 'Maintenance' },
+    ],
+  },
+  {
+    id: 'shr-suc',
+    name: 'Suction Connection',
+    description: 'For extracting or discharging the crushed material.',
+    position: { x: 80, y: 20 },
+    parts: [
+      { id: 'suc-hose', partNumber: 'GRS-SHR-SUC-001', name: 'Flexible Suction Hose', description: 'Heavy-duty extraction hose (per meter).', price: 65, currency: 'EUR', availability: 'in-stock', category: 'Accessories' },
+    ],
+  },
+  {
+    id: 'shr-hop',
     name: 'Hopper',
-    description: 'Material intake hopper for bulk loading.',
+    description: 'For manual or automated material feeding.',
     position: { x: 50, y: 15 },
     parts: [
       { id: 'hop-seal', partNumber: 'GRS-SHR-HOP-001', name: 'Hopper Seal Kit', description: 'Rubber seals for the hopper rim.', price: 55, currency: 'EUR', availability: 'in-stock', category: 'Seals & Gaskets' },
-      { id: 'hop-sensor', partNumber: 'GRS-SHR-HOP-002', name: 'Level Sensor', description: 'Optical level sensor for auto-feed control.', price: 185, currency: 'EUR', availability: 'in-stock', category: 'Electronics' },
     ],
   },
   {
-    id: 'shr-rotor',
-    name: 'Rotor & Cutting System',
-    description: 'Main shredding rotor with replaceable cutting knives.',
+    id: 'shr-gear',
+    name: 'Gearbox',
+    description: 'Resistant to vibrations and impacts.',
+    position: { x: 80, y: 60 },
+    parts: [
+      { id: 'gear-lub', partNumber: 'GRS-SHR-GBX-001', name: 'Gearbox Lubricant', description: 'High-performance synthetic gear oil (5L).', price: 95, currency: 'EUR', availability: 'in-stock', category: 'Maintenance' },
+      { id: 'gear-seal', partNumber: 'GRS-SHR-GBX-002', name: 'Gearbox Seal Ring', description: 'Main shaft seal replacement.', price: 35, currency: 'EUR', availability: 'low-stock', category: 'Seals & Gaskets' },
+    ],
+  },
+  {
+    id: 'shr-foot',
+    name: 'Rubber Feet',
+    description: 'Absorb vibrations. No need to anchor the machine to the floor.',
+    position: { x: 50, y: 90 },
+    parts: [
+      { id: 'foot-pad', partNumber: 'GRS-SHR-FT-001', name: 'Anti-Vibration Mount Set', description: 'Set of 4 heavy-duty rubber machine mounts.', price: 120, currency: 'EUR', availability: 'in-stock', category: 'Hardware' },
+    ],
+  },
+  {
+    id: 'shr-push',
+    name: 'Pusher',
+    description: 'Presses the material horizontally against the rotor.',
+    position: { x: 30, y: 50 },
+    parts: [
+      { id: 'push-guide', partNumber: 'GRS-SHR-PSH-001', name: 'Pusher Guide Rail Set', description: 'Brass guide rails for the horizontal pusher.', price: 210, currency: 'EUR', availability: 'on-order', leadTimeDays: 7, category: 'Wear Parts' },
+    ],
+  },
+  {
+    id: 'shr-drv',
+    name: 'Drive',
+    description: 'Tried-and-tested electromechanical drive.',
+    position: { x: 20, y: 60 },
+    parts: [
+      { id: 'drv-belt', partNumber: 'GRS-SHR-DRV-001', name: 'V-Belt Drive Set', description: 'Complete set of transmission belts.', price: 140, currency: 'EUR', availability: 'in-stock', category: 'Mechanical' },
+    ],
+  },
+  {
+    id: 'shr-rot',
+    name: 'Rotor',
+    description: 'Fitted with cutting blades.',
     position: { x: 50, y: 50 },
     parts: [
       { id: 'rot-knife', partNumber: 'GRS-SHR-ROT-001', name: 'Cutting Knife (Standard)', description: 'Hardened steel cutting knife (1 piece).', price: 35, currency: 'EUR', availability: 'in-stock', category: 'Wear Parts' },
-      { id: 'rot-holder', partNumber: 'GRS-SHR-ROT-002', name: 'Knife Holder', description: 'Base holder block for the cutting knife.', price: 85, currency: 'EUR', availability: 'low-stock', category: 'Wear Parts' },
-      { id: 'rot-bolt', partNumber: 'GRS-SHR-ROT-003', name: 'High-Tensile Bolt Set', description: 'Set of 10 bolts for securing knives.', price: 25, currency: 'EUR', availability: 'in-stock', category: 'Hardware' },
+      { id: 'rot-bolt', partNumber: 'GRS-SHR-ROT-002', name: 'High-Tensile Bolt Set', description: 'Set of 10 bolts for securing knives.', price: 25, currency: 'EUR', availability: 'in-stock', category: 'Hardware' },
     ],
   },
   {
-    id: 'shr-screen',
+    id: 'shr-scr',
     name: 'Screen',
-    description: 'Determines the final output size of the shredded material.',
+    description: 'Round-hole sieves available in a range of diameters.',
     position: { x: 50, y: 75 },
     parts: [
-      { id: 'scr-20mm', partNumber: 'GRS-SHR-SCR-020', name: 'Screen 20mm', description: 'Heavy-duty screen with 20mm holes.', price: 420, currency: 'EUR', availability: 'in-stock', category: 'Wear Parts' },
-      { id: 'scr-40mm', partNumber: 'GRS-SHR-SCR-040', name: 'Screen 40mm', description: 'Heavy-duty screen with 40mm holes.', price: 390, currency: 'EUR', availability: 'in-stock', category: 'Wear Parts' },
-    ],
-  },
-  {
-    id: 'shr-motor',
-    name: 'Drive Motor',
-    description: 'Main electric drive motor powering the rotor.',
-    position: { x: 20, y: 60 },
-    parts: [
-      { id: 'mot-belt', partNumber: 'GRS-SHR-MOT-001', name: 'Drive Belt Set', description: 'Set of V-belts for power transmission.', price: 120, currency: 'EUR', availability: 'in-stock', category: 'Mechanical' },
+      { id: 'scr-20', partNumber: 'GRS-SHR-SCR-020', name: 'Screen 20mm', description: 'Heavy-duty screen with 20mm holes.', price: 420, currency: 'EUR', availability: 'in-stock', category: 'Wear Parts' },
+      { id: 'scr-40', partNumber: 'GRS-SHR-SCR-040', name: 'Screen 40mm', description: 'Heavy-duty screen with 40mm holes.', price: 390, currency: 'EUR', availability: 'in-stock', category: 'Wear Parts' },
     ],
   },
 ];
 
 const briquettingModules: Module[] = [
   {
-    id: 'briq-hopper',
-    name: 'Hopper',
-    description: 'Material intake hopper for wood shavings and sawdust.',
-    position: { x: 37, y: 23 },
+    id: 'brq-len',
+    name: 'Briquette Length Monitoring',
+    description: 'For consistently high-quality briquettes.',
+    position: { x: 80, y: 50 },
     parts: [
-      { id: 'hop-seal', partNumber: 'GRS-BRQ-HOP-001', name: 'Hopper Seal Ring', description: 'Replacement rubber seal ring for the hopper intake opening.', price: 45, currency: 'EUR', availability: 'in-stock', category: 'Seals & Gaskets' },
-      { id: 'hop-hinge', partNumber: 'GRS-BRQ-HOP-002', name: 'Hopper Lid Hinge Set', description: 'Set of 2 heavy-duty stainless steel hinges for the hopper safety lid.', price: 89, currency: 'EUR', availability: 'in-stock', category: 'Mechanical' },
+      { id: 'len-sens', partNumber: 'GRS-BRQ-LEN-001', name: 'Optical Length Sensor', description: 'Laser sensor for accurate length measurement.', price: 245, currency: 'EUR', availability: 'in-stock', category: 'Electronics' },
     ],
   },
   {
-    id: 'briq-mixer',
-    name: 'Mixer / Agitator',
-    description: 'Feeds material into the screw conveyor shaft for consistent compression.',
-    position: { x: 40, y: 56 },
+    id: 'brq-conv',
+    name: 'Conveyor Screw',
+    description: 'Feeds material into the filling tower.',
+    position: { x: 50, y: 50 },
     parts: [
-      { id: 'mix-blade', partNumber: 'GRS-BRQ-MIX-001', name: 'Mixer Blade Set', description: 'Set of 4 hardened steel mixer blades.', price: 320, currency: 'EUR', availability: 'in-stock', category: 'Wear Parts' },
+      { id: 'conv-aug', partNumber: 'GRS-BRQ-CNV-001', name: 'Auger Screw Flight', description: 'Hard-faced replacement auger section.', price: 580, currency: 'EUR', availability: 'on-order', leadTimeDays: 21, category: 'Wear Parts' },
+    ],
+  },
+  {
+    id: 'brq-mix',
+    name: 'Mixer',
+    description: 'Feeds material into the screw conveyor shaft.',
+    position: { x: 50, y: 30 },
+    parts: [
+      { id: 'mix-bld', partNumber: 'GRS-BRQ-MIX-001', name: 'Mixer Blade Set', description: 'Set of hardened steel agitator blades.', price: 320, currency: 'EUR', availability: 'in-stock', category: 'Wear Parts' },
+    ],
+  },
+  {
+    id: 'brq-mnt',
+    name: 'Maintenance Hatch',
+    description: 'Direct access for servicing.',
+    position: { x: 20, y: 50 },
+    parts: [
+      { id: 'mnt-lock', partNumber: 'GRS-BRQ-MNT-001', name: 'Safety Interlock Switch', description: 'Magnetic safety switch for the maintenance door.', price: 115, currency: 'EUR', availability: 'in-stock', category: 'Electrical' },
+    ],
+  },
+  {
+    id: 'brq-cyl',
+    name: 'Press Cylinder',
+    description: 'Operates hydraulically and compacts the material.',
+    position: { x: 50, y: 70 },
+    parts: [
+      { id: 'cyl-seal', partNumber: 'GRS-BRQ-CYL-001', name: 'Main Press Cylinder Seal Kit', description: 'Complete rebuild seal kit for the press cylinder.', price: 290, currency: 'EUR', availability: 'low-stock', category: 'Seals & Gaskets' },
+    ],
+  },
+  {
+    id: 'brq-hop',
+    name: 'Hopper',
+    description: 'Generously sized for material intake.',
+    position: { x: 50, y: 15 },
+    parts: [
+      { id: 'hop-sen', partNumber: 'GRS-BRQ-HOP-001', name: 'Level Indicator Sensor', description: 'Capacitive sensor for hopper fill level.', price: 165, currency: 'EUR', availability: 'in-stock', category: 'Electronics' },
+    ],
+  },
+  {
+    id: 'brq-tank',
+    name: 'Hydraulic Tank',
+    description: 'Contains oil for lubricating the cylinders.',
+    position: { x: 20, y: 80 },
+    parts: [
+      { id: 'tnk-breth', partNumber: 'GRS-BRQ-TNK-001', name: 'Tank Breather Cap', description: 'Ventilation and filler cap for hydraulic reservoir.', price: 35, currency: 'EUR', availability: 'in-stock', category: 'Hydraulics' },
+      { id: 'tnk-fil', partNumber: 'GRS-BRQ-TNK-002', name: 'Return Line Filter', description: 'In-tank hydraulic fluid return filter.', price: 55, currency: 'EUR', availability: 'in-stock', category: 'Maintenance' },
+    ],
+  },
+  {
+    id: 'brq-clp',
+    name: 'Clamping Cylinder',
+    description: 'This is where the final briquette is formed.',
+    position: { x: 80, y: 70 },
+    parts: [
+      { id: 'clp-jaw', partNumber: 'GRS-BRQ-CLP-001', name: 'Hardened Clamping Jaws', description: 'Set of wear-resistant forming jaws.', price: 850, currency: 'EUR', availability: 'on-order', leadTimeDays: 14, category: 'Wear Parts' },
+    ],
+  },
+  {
+    id: 'brq-twr',
+    name: 'Filling Tower',
+    description: 'Pre-compaction takes place in the filling tower.',
+    position: { x: 50, y: 40 },
+    parts: [
+      { id: 'twr-lin', partNumber: 'GRS-BRQ-TWR-001', name: 'Tower Wear Liners', description: 'Bolt-on abrasive-resistant liner plates.', price: 420, currency: 'EUR', availability: 'low-stock', category: 'Wear Parts' },
     ],
   },
 ];
