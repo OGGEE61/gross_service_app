@@ -47,3 +47,5 @@ data/orders.json
 
 # Vercel
 .vercel
+scraper_shredders.mjs
+scraper_briquetting.mjs

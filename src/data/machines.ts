@@ -43,6 +43,28 @@ const shredderModules: Module[] = [
   },
 ];
 
+const briquettingModules: Module[] = [
+  {
+    id: 'briq-hopper',
+    name: 'Hopper',
+    description: 'Material intake hopper for wood shavings and sawdust.',
+    position: { x: 37, y: 23 },
+    parts: [
+      { id: 'hop-seal', partNumber: 'GRS-BRQ-HOP-001', name: 'Hopper Seal Ring', description: 'Replacement rubber seal ring for the hopper intake opening.', price: 45, currency: 'EUR', availability: 'in-stock', category: 'Seals & Gaskets' },
+      { id: 'hop-hinge', partNumber: 'GRS-BRQ-HOP-002', name: 'Hopper Lid Hinge Set', description: 'Set of 2 heavy-duty stainless steel hinges for the hopper safety lid.', price: 89, currency: 'EUR', availability: 'in-stock', category: 'Mechanical' },
+    ],
+  },
+  {
+    id: 'briq-mixer',
+    name: 'Mixer / Agitator',
+    description: 'Feeds material into the screw conveyor shaft for consistent compression.',
+    position: { x: 40, y: 56 },
+    parts: [
+      { id: 'mix-blade', partNumber: 'GRS-BRQ-MIX-001', name: 'Mixer Blade Set', description: 'Set of 4 hardened steel mixer blades.', price: 320, currency: 'EUR', availability: 'in-stock', category: 'Wear Parts' },
+    ],
+  },
+];
+
 const getModules = (prefix: string) => 
   shredderModules.map(mod => ({
     ...mod,
@@ -53,38 +75,127 @@ const getModules = (prefix: string) =>
     }))
   }));
 
+const getBriquettingModules = (prefix: string) => 
+  briquettingModules.map(mod => ({
+    ...mod,
+    id: `${prefix}-${mod.id}`,
+    parts: mod.parts.map(part => ({
+      ...part,
+      id: `${prefix}-${part.id}`
+    }))
+  }));
+
 export const machines: Machine[] = [
-  // ─── Briquetting (Kept as template) ───────────────────────────────────────
+  // ─── Briquetting Presses ──────────────────────────────────────────────────
   {
     id: 'genius-2-40',
     name: 'Genius 2 / 40',
-    model: 'Genius 2',
+    model: 'Genius',
     type: 'briquetting',
     serialNumber: '',
     image: '/machines/genius-2-40.png',
     xrayImage: '/machines/genius-2-40-xray.png',
-    description: 'Compact briquette press for light wood shavings, sawdust, sanding dust and loose paper cuttings. Clamping technology, 40 mm diameter briquettes.',
-    modules: [
-      {
-        id: 'g240-hopper',
-        name: 'Hopper',
-        description: 'Material intake hopper for wood shavings and sawdust.',
-        position: { x: 37, y: 23 },
-        parts: [
-          { id: 'g240-hop-seal', partNumber: 'GRS-G2-HOP-001', name: 'Hopper Seal Ring', description: 'Replacement rubber seal ring for the hopper intake opening.', price: 45, currency: 'EUR', availability: 'in-stock', category: 'Seals & Gaskets' },
-          { id: 'g240-hop-hinge', partNumber: 'GRS-G2-HOP-002', name: 'Hopper Lid Hinge Set', description: 'Set of 2 heavy-duty stainless steel hinges for the hopper safety lid.', price: 89, currency: 'EUR', availability: 'in-stock', category: 'Mechanical' },
-        ],
-      },
-      {
-        id: 'g240-mixer',
-        name: 'Mixer / Agitator',
-        description: 'Feeds material into the screw conveyor shaft for consistent compression.',
-        position: { x: 40, y: 56 },
-        parts: [
-          { id: 'g240-mix-blade', partNumber: 'GRS-G2-MIX-001', name: 'Mixer Blade Set', description: 'Set of 4 hardened steel mixer blades.', price: 320, currency: 'EUR', availability: 'in-stock', category: 'Wear Parts' },
-        ],
-      },
-    ],
+    description: 'The entry-level machine | 40 mm briquette diameter',
+    modules: getBriquettingModules('g240'),
+  },
+  {
+    id: 'genius-2-50',
+    name: 'Genius 2 / 50',
+    model: 'Genius',
+    type: 'briquetting',
+    serialNumber: '',
+    image: '/machines/genius-2-50.png',
+    xrayImage: '/machines/genius-2-50-xray.png',
+    description: 'The basic machine | 50 mm briquette diameter',
+    modules: getBriquettingModules('g250'),
+  },
+  {
+    id: 'genius-2-60',
+    name: 'Genius 2 / 60',
+    model: 'Genius',
+    type: 'briquetting',
+    serialNumber: '',
+    image: '/machines/genius-2-60.png',
+    xrayImage: '/machines/genius-2-60-xray.png',
+    description: 'The basic machine | 60 mm briquette diameter',
+    modules: getBriquettingModules('g260'),
+  },
+  {
+    id: 'genius-2-70',
+    name: 'Genius 2 / 70',
+    model: 'Genius',
+    type: 'briquetting',
+    serialNumber: '',
+    image: '/machines/genius-2-70.png',
+    xrayImage: '/machines/genius-2-70-xray.png',
+    description: 'The basic machine | 70 mm briquette diameter',
+    modules: getBriquettingModules('g270'),
+  },
+  {
+    id: 'gp-80',
+    name: 'GP 80',
+    model: 'GP',
+    type: 'briquetting',
+    serialNumber: '',
+    image: '/machines/gp-80.png',
+    xrayImage: '/machines/gp-80-xray.png',
+    description: 'Medium throughput requirements | 80 mm briquette diameter',
+    modules: getBriquettingModules('gp80'),
+  },
+  {
+    id: 'gp-100',
+    name: 'GP 100',
+    model: 'GP',
+    type: 'briquetting',
+    serialNumber: '',
+    image: '/machines/gp-100.png',
+    xrayImage: '/machines/gp-100-xray.png',
+    description: 'Medium throughput requirements | 60 mm briquette diameter',
+    modules: getBriquettingModules('gp100'),
+  },
+  {
+    id: 'gp-150',
+    name: 'GP 150',
+    model: 'GP',
+    type: 'briquetting',
+    serialNumber: '',
+    image: '/machines/gp-150.png',
+    xrayImage: '/machines/gp-150-xray.png',
+    description: 'Medium to high throughput requirements | 70 mm briquette diameter',
+    modules: getBriquettingModules('gp150'),
+  },
+  {
+    id: 'gp-200',
+    name: 'GP 200',
+    model: 'GP',
+    type: 'briquetting',
+    serialNumber: '',
+    image: '/machines/gp-200.png',
+    xrayImage: '/machines/gp-200-xray.png',
+    description: 'Medium to high throughput requirements | 80 mm briquette diameter',
+    modules: getBriquettingModules('gp200'),
+  },
+  {
+    id: 'gp-300-s',
+    name: 'GP 300 S',
+    model: 'GP',
+    type: 'briquetting',
+    serialNumber: '',
+    image: '/machines/gp-300-s.png',
+    xrayImage: '/machines/gp-300-s-xray.png',
+    description: 'Maximum output | 80 mm briquette diameter',
+    modules: getBriquettingModules('gp300s'),
+  },
+  {
+    id: 'gp-400-m',
+    name: 'GP 400 M',
+    model: 'GP',
+    type: 'briquetting',
+    serialNumber: '',
+    image: '/machines/gp-400-m.png',
+    xrayImage: '/machines/gp-400-m-xray.png',
+    description: 'For industrial use | 150 x 60 mm rectangular briquette',
+    modules: getBriquettingModules('gp400m'),
   },
 
   // ─── Seria GAZ ────────────────────────────────────────────────────────────
