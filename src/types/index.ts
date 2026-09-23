@@ -2,6 +2,7 @@ export interface Machine {
   id: string;
   name: string;
   model: string;
+  type: 'shredder' | 'briquetting';
   serialNumber: string;
   image: string;
   xrayImage: string;
