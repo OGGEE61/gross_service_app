@@ -41,3 +41,9 @@ yarn-error.log*
 next-env.d.ts
 AGENTS.md
 CLAUDE.md
+
+# Local data
+data/orders.json
+
+# Vercel
+.vercel
