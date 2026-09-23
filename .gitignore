@@ -49,3 +49,5 @@ data/orders.json
 .vercel
 scraper_shredders.mjs
 scraper_briquetting.mjs
+
+scrappers/
