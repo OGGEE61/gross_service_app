@@ -409,7 +409,7 @@ export const machines: Machine[] = [
     model: 'Genius',
     type: 'briquetting',
     serialNumber: '',
-    image: '/machines/genius-2-60.png',
+    image: '/machines/genius-2-60-v2.png',
     xrayImage: '/machines/genius-2-60-xray.png',
     description: 'The basic machine | 60 mm briquette diameter',
     modules: [
