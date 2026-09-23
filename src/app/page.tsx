@@ -134,7 +134,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {filteredMachines.map((machine, i) => {
               const partCount = machine.modules.reduce((a, m) => a + m.parts.length, 0);
               const inStockCount = machine.modules.reduce(
