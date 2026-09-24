@@ -3,6 +3,7 @@
 import { ShoppingCart } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { motion, AnimatePresence } from 'framer-motion';
+import Link from 'next/link';
 
 interface HeaderProps {
   machineName?: string;
@@ -16,14 +17,14 @@ export default function Header({ machineName, serialNumber }: HeaderProps) {
     <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-white/80 border-b border-[#dadada]/50">
       <div className="max-w-[2100px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <a href="/" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2">
             <span className="text-[#282828] font-bold text-xl tracking-tight">
               GROSS
             </span>
             <span className="text-[#0063ff] font-mono text-[10px] uppercase tracking-widest border border-[#0063ff]/30 rounded px-1.5 py-0.5">
               Parts
             </span>
-          </a>
+          </Link>
           {machineName && (
             <div className="hidden sm:flex items-center gap-2 ml-4 pl-4 border-l border-[#dadada]">
               <span className="text-[#6b6969] text-sm font-medium">{machineName}</span>

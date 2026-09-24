@@ -11,17 +11,25 @@ export async function POST(req: NextRequest) {
   }
 
   const orderId = crypto.randomUUID();
-  await sql`
-    INSERT INTO orders (id, serial_number, machine_type_id, customer_name, customer_email, customer_phone, notes)
-    VALUES (${orderId}, ${serialNumber ?? null}, ${machineTypeId}, ${customerName}, ${customerEmail}, ${customerPhone ?? null}, ${notes ?? null})
-  `;
+  
+  const queries = [
+    sql`
+      INSERT INTO orders (id, serial_number, machine_type_id, customer_name, customer_email, customer_phone, notes)
+      VALUES (${orderId}, ${serialNumber ?? null}, ${machineTypeId}, ${customerName}, ${customerEmail}, ${customerPhone ?? null}, ${notes ?? null})
+    `
+  ];
 
   for (const item of items) {
-    await sql`
-      INSERT INTO order_items (order_id, part_id, part_number, part_name, quantity, unit_price, currency)
-      VALUES (${orderId}, ${item.partId}, ${item.partNumber}, ${item.partName}, ${item.quantity}, ${item.unitPrice}, ${item.currency ?? 'EUR'})
-    `;
+    queries.push(
+      sql`
+        INSERT INTO order_items (order_id, part_id, part_number, part_name, quantity, unit_price, currency)
+        VALUES (${orderId}, ${item.partId}, ${item.partNumber}, ${item.partName}, ${item.quantity}, ${item.unitPrice}, ${item.currency ?? 'EUR'})
+      `
+    );
   }
+
+  // Execute all queries in a single transaction (batch)
+  await sql.transaction(queries);
 
   return NextResponse.json({ orderId }, { status: 201 });
 }

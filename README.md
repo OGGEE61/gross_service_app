@@ -139,3 +139,11 @@ Default PIN (local dev): `gross2024`
 Production PIN: set via `ADMIN_PIN` in Vercel environment variables.
 
 > ⚠️ Change the default PIN before going live.
+
+---
+
+## Production Optimizations Applied
+
+- **Database Transactions:** Order creation uses batching (`sql.transaction`) to prevent N+1 HTTP queries to Neon Serverless, ensuring fast edge performance and data integrity.
+- **Client-side Routing:** Uses Next.js `<Link>` components to maintain SPA architecture, enable link prefetching, and prevent full-page reloads.
+- **Secure Authentication:** The `ADMIN_PIN` is hashed via SHA-256 before being stored in the `HttpOnly` session cookie to prevent plaintext secret exposure.
