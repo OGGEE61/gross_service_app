@@ -22,15 +22,35 @@ After-sales parts ordering portal for **GROSS briquetting machines**. Customers 
 
 ## Machine Catalogue
 
-| Machine | Series | Briquette Ø |
+| Machine | Series | Description |
 |---|---|---|
-| GP-Genius 1 / 40 | Genius | 40 mm |
-| Genius 2 / 40 | Genius | 40 mm |
-| Genius 2 / 50 | Genius | 50 mm |
-| Genius 2 / 60 | Genius | 60 mm |
-| GP 80 | GP Series | 80 mm |
-| GP 150 | GP Series | 80 mm |
-| GP 300 S | GP S-Series | 80 mm |
+| Genius 2 / 40 | Genius | The entry-level machine, 40 mm briquette diameter |
+| Genius 2 / 50 | Genius | The basic machine, 50 mm briquette diameter |
+| Genius 2 / 60 | Genius | The basic machine, 60 mm briquette diameter |
+| Genius 2 / 70 | Genius | The basic machine, 70 mm briquette diameter |
+| GP 80 | GP | Medium throughput requirements, 80 mm briquette diameter |
+| GP 100 | GP | Medium throughput requirements, 60 mm briquette diameter |
+| GP 150 | GP | Medium to high throughput requirements, 70 mm briquette diameter |
+| GP 200 | GP | Medium to high throughput requirements, 80 mm briquette diameter |
+| GP 300 S | GP | Maximum output, 80 mm briquette diameter |
+| GP 400 M | GP | For industrial use, 150 x 60 mm rectangular briquette |
+| GAZ 600 | Seria GAZ | Single-shaft wood shredder |
+| GAZ 62 | Seria GAZ | Single-shaft wood shredder |
+| GAZ 82 | Seria GAZ | Single-shaft wood shredder |
+| GAZ 82 S | Seria GAZ | Single-shaft wood shredder (S-version) |
+| GAZ 102 | Seria GAZ | Single-shaft wood shredder |
+| GAZ 102 S | Seria GAZ | Single-shaft wood shredder (S-version) |
+| GAZ 152 S | Seria GAZ | Single-shaft wood shredder (S-version) |
+| GAZK 800 | Seria GAZK | Single-shaft shredder for plastics, paper, and wood |
+| GAZK 1000 | Seria GAZK | Single-shaft shredder for plastics, paper, and wood |
+| GAZK 1500 | Seria GAZK | Single-shaft shredder for plastics, paper, and wood |
+| GAZK 2000 | Seria GAZK | Single-shaft shredder for plastics, paper, and wood |
+| GHZ B4 | Seria GHZ | Horizontal single-shaft shredder for long timber |
+| GHZ 3–6 | Seria GHZ | Horizontal single-shaft shredder for long timber |
+| GHZ T 6-13 | Seria GHZ | Horizontal single-shaft shredder for long timber |
+| GZ 30 | Seria GZ | Four-shaft shredder for continuous operation |
+| GZ 40 | Seria GZ | Four-shaft shredder for continuous operation |
+| GZ 50 | Seria GZ | Four-shaft shredder for continuous operation |
 
 ---
 
@@ -38,10 +58,11 @@ After-sales parts ordering portal for **GROSS briquetting machines**. Customers 
 
 - **Framework**: Next.js 16 (App Router, TypeScript)
 - **Styling**: Tailwind CSS v4
-- **Animations**: Framer Motion
+- **Icons & Animations**: `lucide-react` & Framer Motion
 - **Database**: Neon Serverless Postgres (via `@neondatabase/serverless`)
 - **QR Scanning**: `jsqr` (browser camera via `getUserMedia`)
 - **QR Generation**: `qrcode`
+- **Data Extraction**: `cheerio` (for backend web-scraping utilities)
 - **Deployment**: Vercel
 
 ---
