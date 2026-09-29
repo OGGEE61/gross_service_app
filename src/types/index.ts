@@ -8,6 +8,13 @@ export interface Machine {
   xrayImage: string;
   description: string;
   modules: Module[];
+  // Populated when the machine is looked up via QR / serial number from the DB
+  clientName?: string;
+  clientEmail?: string;
+  clientAddress?: string;
+  clientPhone?: string;
+  installedAt?: string;
+  notes?: string;
 }
 
 export interface Module {

@@ -4887,3 +4887,8 @@ export const machines: Machine[] = [
 export function getMachineById(id: string): Machine | undefined {
   return machines.find((m) => m.id === id);
 }
+
+// Alias: looks up by machine type ID (the value stored in the DB machines.machine_type_id column)
+export function getMachineByTypeId(machineTypeId: string): Machine | undefined {
+  return machines.find((m) => m.id === machineTypeId);
+}

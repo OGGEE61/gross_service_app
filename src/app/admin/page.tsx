@@ -2,10 +2,11 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Package, Cpu, Eye, EyeOff, LogOut, Download,
   ChevronDown, CheckCircle, Clock, Truck, XCircle, QrCode,
+  Pencil, X, Save, Loader2,
 } from 'lucide-react';
 import { machines } from '@/data/machines';
 
@@ -21,11 +22,22 @@ interface Order {
 
 interface RegisteredMachine {
   serial_number: string; machine_type_id: string; machine_type_name: string;
-  client_name: string; client_email: string; client_address: string; created_at: string;
+  client_name: string; client_email: string; client_address: string;
+  client_phone: string; installed_at: string | null; notes: string | null;
+  created_at: string;
 }
 
 interface PartVisibility {
   id: string; name: string; part_number: string; category: string; visible: boolean; module_id: string;
+}
+
+interface EditForm {
+  clientName: string;
+  clientEmail: string;
+  clientAddress: string;
+  clientPhone: string;
+  installedAt: string;
+  notes: string;
 }
 
 const statusConfig: Record<OrderStatus, { label: string; color: string; icon: React.ElementType }> = {
@@ -45,6 +57,12 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [newMachine, setNewMachine] = useState({ serialNumber: '', machineTypeId: machines[0].id, clientName: '', clientEmail: '', clientAddress: '', clientPhone: '' });
   const [registerMsg, setRegisterMsg] = useState('');
+
+  // Edit modal state
+  const [editingMachine, setEditingMachine] = useState<RegisteredMachine | null>(null);
+  const [editForm, setEditForm] = useState<EditForm>({ clientName: '', clientEmail: '', clientAddress: '', clientPhone: '', installedAt: '', notes: '' });
+  const [editSaving, setEditSaving] = useState(false);
+  const [editMsg, setEditMsg] = useState('');
 
   const fetchOrders = useCallback(async () => {
     const res = await fetch('/api/orders');
@@ -94,6 +112,51 @@ export default function AdminDashboard() {
     setTimeout(() => setRegisterMsg(''), 3000);
   };
 
+  // ── Edit modal handlers ──
+  const openEdit = (m: RegisteredMachine) => {
+    setEditingMachine(m);
+    setEditForm({
+      clientName: m.client_name ?? '',
+      clientEmail: m.client_email ?? '',
+      clientAddress: m.client_address ?? '',
+      clientPhone: m.client_phone ?? '',
+      installedAt: m.installed_at ? m.installed_at.split('T')[0] : '',
+      notes: m.notes ?? '',
+    });
+    setEditMsg('');
+  };
+
+  const closeEdit = () => {
+    setEditingMachine(null);
+    setEditMsg('');
+  };
+
+  const handleSaveEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingMachine) return;
+    setEditSaving(true);
+    const res = await fetch(`/api/machines-db/${encodeURIComponent(editingMachine.serial_number)}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        clientName: editForm.clientName || null,
+        clientEmail: editForm.clientEmail || null,
+        clientAddress: editForm.clientAddress || null,
+        clientPhone: editForm.clientPhone || null,
+        installedAt: editForm.installedAt || null,
+        notes: editForm.notes || null,
+      }),
+    });
+    setEditSaving(false);
+    if (res.ok) {
+      setEditMsg('Saved!');
+      await fetchMachines();
+      setTimeout(() => closeEdit(), 900);
+    } else {
+      setEditMsg('Error saving changes.');
+    }
+  };
+
   const exportCSV = () => {
     const rows = [
       ['Order ID', 'Machine', 'Customer', 'Email', 'Status', 'Date', 'Items'],
@@ -110,7 +173,7 @@ export default function AdminDashboard() {
 
   const logout = async () => { await fetch('/api/auth', { method: 'DELETE' }); router.push('/admin/login'); };
 
-  const inputClass = "w-full border border-[#dadada] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#0063ff] transition-colors";
+  const inputClass = "w-full border border-[#dadada] rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#0063ff] transition-colors bg-white";
 
   return (
     <div className="min-h-screen bg-[#f9f9f9]">
@@ -286,18 +349,29 @@ export default function AdminDashboard() {
                   {registeredMachines.map((m) => (
                     <div key={m.serial_number} className="p-4 hover:bg-[#f9f9f9] transition-colors">
                       <div className="flex items-start justify-between gap-2">
-                        <div>
+                        <div className="flex-1 min-w-0">
                           <p className="font-semibold text-[#282828] text-sm">{m.machine_type_name}</p>
                           <p className="font-mono text-xs text-[#0063ff]">{m.serial_number}</p>
-                          <p className="text-xs text-[#929292] mt-0.5">{m.client_name} · {m.client_email}</p>
+                          <p className="text-xs text-[#929292] mt-0.5 truncate">{m.client_name || '—'} · {m.client_email || '—'}</p>
                         </div>
-                        <button
-                          onClick={() => router.push(`/admin/qr-codes?sn=${m.serial_number}`)}
-                          className="p-1.5 hover:bg-[#f3f2f2] rounded-lg transition-colors cursor-pointer"
-                          title="View QR"
-                        >
-                          <QrCode size={16} className="text-[#929292]" />
-                        </button>
+                        <div className="flex items-center gap-1 flex-shrink-0">
+                          {/* Edit client details */}
+                          <button
+                            onClick={() => openEdit(m)}
+                            className="p-1.5 hover:bg-[#f3f2f2] rounded-lg transition-colors cursor-pointer"
+                            title="Edit client details"
+                          >
+                            <Pencil size={14} className="text-[#929292] hover:text-[#0063ff]" />
+                          </button>
+                          {/* View QR */}
+                          <button
+                            onClick={() => router.push(`/admin/qr-codes?sn=${m.serial_number}`)}
+                            className="p-1.5 hover:bg-[#f3f2f2] rounded-lg transition-colors cursor-pointer"
+                            title="View QR"
+                          >
+                            <QrCode size={16} className="text-[#929292]" />
+                          </button>
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -347,6 +421,142 @@ export default function AdminDashboard() {
           </div>
         )}
       </main>
+
+      {/* ── Edit Client Details Modal ── */}
+      <AnimatePresence>
+        {editingMachine && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              key="backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={closeEdit}
+              className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm"
+            />
+
+            {/* Modal */}
+            <motion.div
+              key="modal"
+              initial={{ opacity: 0, scale: 0.96, y: 8 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.96, y: 8 }}
+              transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
+            >
+              <div className="w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-[#dadada]/70 pointer-events-auto">
+                {/* Modal header */}
+                <div className="flex items-center justify-between p-5 border-b border-[#dadada]/50">
+                  <div>
+                    <h3 className="font-bold text-[#282828]">Edit Client Details</h3>
+                    <p className="text-xs text-[#929292] mt-0.5 font-mono">{editingMachine.serial_number} · {editingMachine.machine_type_name}</p>
+                  </div>
+                  <button
+                    onClick={closeEdit}
+                    className="p-2 hover:bg-[#f3f2f2] rounded-lg transition-colors cursor-pointer"
+                  >
+                    <X size={18} className="text-[#929292]" />
+                  </button>
+                </div>
+
+                {/* Warning notice */}
+                <div className="mx-5 mt-4 flex items-start gap-2.5 bg-[#fff7ed] border border-[#fed7aa] rounded-xl px-4 py-3">
+                  <CheckCircle size={15} className="text-[#d97706] flex-shrink-0 mt-0.5" />
+                  <p className="text-xs text-[#92400e]">
+                    Use this form when a machine is <strong>sold or relocated</strong>. Changes take effect immediately and will show on the next QR scan.
+                  </p>
+                </div>
+
+                {/* Form */}
+                <form onSubmit={handleSaveEdit} className="p-5 flex flex-col gap-4">
+                  <div>
+                    <label className="text-xs font-medium text-[#929292] block mb-1">Client / Company Name</label>
+                    <input
+                      value={editForm.clientName}
+                      onChange={(e) => setEditForm((p) => ({ ...p, clientName: e.target.value }))}
+                      placeholder="Company or client name"
+                      className={inputClass}
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-xs font-medium text-[#929292] block mb-1">Email</label>
+                      <input
+                        type="email"
+                        value={editForm.clientEmail}
+                        onChange={(e) => setEditForm((p) => ({ ...p, clientEmail: e.target.value }))}
+                        placeholder="email@client.com"
+                        className={inputClass}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs font-medium text-[#929292] block mb-1">Phone</label>
+                      <input
+                        value={editForm.clientPhone}
+                        onChange={(e) => setEditForm((p) => ({ ...p, clientPhone: e.target.value }))}
+                        placeholder="+48 ..."
+                        className={inputClass}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-xs font-medium text-[#929292] block mb-1">Install Address</label>
+                    <input
+                      value={editForm.clientAddress}
+                      onChange={(e) => setEditForm((p) => ({ ...p, clientAddress: e.target.value }))}
+                      placeholder="Street, City, Country"
+                      className={inputClass}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-medium text-[#929292] block mb-1">Installation Date</label>
+                    <input
+                      type="date"
+                      value={editForm.installedAt}
+                      onChange={(e) => setEditForm((p) => ({ ...p, installedAt: e.target.value }))}
+                      className={inputClass}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-medium text-[#929292] block mb-1">Notes</label>
+                    <textarea
+                      value={editForm.notes}
+                      onChange={(e) => setEditForm((p) => ({ ...p, notes: e.target.value }))}
+                      placeholder="Internal notes (not visible to customer)"
+                      rows={2}
+                      className={`${inputClass} resize-none`}
+                    />
+                  </div>
+
+                  <div className="flex items-center gap-3 pt-1">
+                    <button
+                      type="button"
+                      onClick={closeEdit}
+                      className="px-5 py-2.5 text-sm font-medium text-[#929292] hover:text-[#282828] hover:bg-[#f3f2f2] rounded-xl transition-colors cursor-pointer"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={editSaving}
+                      className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-[#282828] text-white text-sm font-bold rounded-xl hover:bg-[#444] transition-colors cursor-pointer disabled:opacity-60"
+                    >
+                      {editSaving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
+                      {editSaving ? 'Saving…' : 'Save Changes'}
+                    </button>
+                    {editMsg && (
+                      <span className={`text-sm font-medium ${editMsg === 'Saved!' ? 'text-[#16a34a]' : 'text-red-500'}`}>
+                        {editMsg}
+                      </span>
+                    )}
+                  </div>
+                </form>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
